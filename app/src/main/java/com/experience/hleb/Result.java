@@ -1,11 +1,11 @@
-package com.experience.hleb;
+package com.calcus;
 
 public class Result {
-    private double acc;
-    private String rest;
+    public double acc;
+    public String rest;
 
-    public Result(double v, String str){
-        acc = v;
+    public Result(double accum, String str){
+        acc = accum;
         rest = str;
     }
 }
