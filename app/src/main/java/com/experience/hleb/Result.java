@@ -1,4 +1,4 @@
-package com.calcus;
+package com.experience.hleb;
 
 public class Result {
     public double acc;
