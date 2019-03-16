@@ -21,7 +21,8 @@
         <item name="android:layout_margin">0.5dp</item>
         <item name="android:onClick">onClickNumbers</item>
         <item name="android:textSize">40sp</item>
-        <item name="android:background">@drawable/button</item>
+        <item name="android:background">@drawable/button_selector</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="FunctionButtonStyle">
@@ -32,7 +33,8 @@
         <item name="android:layout_margin">0.5dp</item>
         <item name="android:onClick">onClickFunctions</item>
         <item name="android:textSize">40sp</item>
-        <item name="android:background">@drawable/button</item>
+        <item name="android:background">@drawable/button_selector</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
     <style name="UtilsButtonStyle">
@@ -43,7 +45,8 @@
         <item name="android:layout_margin">0.5dp</item>
         <item name="android:onClick">onClickUtils</item>
         <item name="android:textSize">40sp</item>
-        <item name="android:background">@drawable/button</item>
+        <item name="android:background">@drawable/button_selector</item>
+        <item name="android:elevation">4dp</item>
     </style>
 
 </resources>

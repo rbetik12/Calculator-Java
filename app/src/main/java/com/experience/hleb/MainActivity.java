@@ -47,15 +47,12 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.buttonZero:
                 equation += ('0');
-                Toast.makeText(this, "0", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buttonOne:
                 equation += ('1');
-                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buttonTwo:
                 equation += ('2');
-                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buttonThree:
                 equation += ('3');
@@ -188,8 +185,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void count(boolean isEqualsPressed) {
-        /**
-         * Counts the expression result, catches possible exceptions
+        /*
+          Counts the expression result, catches possible exceptions
          */
 
         parser = new MatchParser();
@@ -217,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setOutput(boolean isEqualsPressed) {
         /**
-         * Set output, whether equal button was pressed or not
+         * Set output, whether equal button_normal was pressed or not
          */
         String strResult;
 
