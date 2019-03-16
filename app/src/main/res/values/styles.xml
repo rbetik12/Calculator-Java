@@ -18,6 +18,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/backspace_button_color</item>
         <item name="android:layout_margin">0.5dp</item>
         <item name="android:onClick">onClickNumbers</item>
         <item name="android:textSize">40sp</item>
@@ -30,6 +31,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/backspace_button_color</item>
         <item name="android:layout_margin">0.5dp</item>
         <item name="android:onClick">onClickFunctions</item>
         <item name="android:textSize">40sp</item>
@@ -42,6 +44,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/backspace_button_color</item>
         <item name="android:layout_margin">0.5dp</item>
         <item name="android:onClick">onClickUtils</item>
         <item name="android:textSize">40sp</item>

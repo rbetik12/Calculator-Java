@@ -2,7 +2,6 @@ package com.experience.hleb;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
@@ -74,19 +73,18 @@ public class MainActivity extends AppCompatActivity {
                 equation += ('9');
                 break;
             case R.id.buttonPoint:
-                equation += (".");
+                equation += ('.');
                 break;
             case R.id.buttonLeftPar:
-                equation += ("(");
+                equation += ('(');
                 break;
             case R.id.buttonRightPar:
-                equation += (")");
+                equation += (')');
                 break;
         }
         resultEquation.setText(equation);
         scrollLeft();
         if (findFunc()) {
-            Log.d("CALC", equation);
             count(false);
         }
     }
@@ -94,21 +92,20 @@ public class MainActivity extends AppCompatActivity {
     public void onClickFunctions(View view) {
         switch (view.getId()) {
             case R.id.buttonAdd:
-                equation += ("+");
+                equation += ('+');
                 break;
             case R.id.buttonMinus:
-                equation += ("-");
+                equation += ('-');
                 break;
             case R.id.buttonDivide:
-                equation += ("/");
+                equation += ('/');
                 break;
             case R.id.buttonMultiply:
-                equation += ("*");
+                equation += ('*');
                 break;
         }
         resultEquation.setText(equation);
         scrollLeft();
-        Log.d("CALC", equation);
         count(false);
     }
 
@@ -133,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
                 else
                     equation = equation.substring(0, equation.length() - 1);
                 resultEquation.setText(equation);
-                Log.d("CALC", equation);
                 count(false);
         }
     }
@@ -187,11 +183,8 @@ public class MainActivity extends AppCompatActivity {
         parser = new MatchParser();
 
         try {
-            Log.d("CALC", "Equation before parsing: " + equation);
             result = parser.Parse(equation);
-            Log.d("CALC", "Result: " + Double.toString(result));
         } catch (IllegalArgumentException e) {
-            Log.d("CALC", e.getMessage());
             if (isEqualsPressed) {
                 midResultEquation.setText(null);
                 equation = "";
@@ -199,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         } catch (ArithmeticException e) {
-            Log.d("CALC", e.getMessage());
             equation = "";
             result = 0.0;
             return;
@@ -229,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean findFunc() {
         /*
-
           Finds functions in equation string. Returns true if function was find or false
           @return boolean
          */
