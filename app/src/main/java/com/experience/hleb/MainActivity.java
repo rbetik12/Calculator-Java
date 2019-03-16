@@ -2,6 +2,7 @@ package com.experience.hleb;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        equation = " ";
+        equation = "";
         result = 0.0;
         MAX_OUTPUT_LENGTH = 19;
         MAX_SYMBOLS_IN_DOUBLE_WEXP = 9;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         midResultEquation = findViewById(R.id.midResultEquation);
         resultEquation = findViewById(R.id.resultEquation);
         scrollView = findViewById(R.id.scroll);
-        functions = new ArrayList();
+        functions = new ArrayList<>();
         functions.add("+");
         functions.add("-");
         functions.add("*");
@@ -46,15 +47,15 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.buttonZero:
                 equation += ('0');
-                Toast.makeText(this,"0", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "0", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buttonOne:
                 equation += ('1');
-                Toast.makeText(this,"1", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buttonTwo:
                 equation += ('2');
-                Toast.makeText(this,"2", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.buttonThree:
                 equation += ('3');
@@ -89,8 +90,10 @@ public class MainActivity extends AppCompatActivity {
         }
         resultEquation.setText(equation);
         scrollLeft();
-        if (findFunc())
+        if (findFunc()) {
+            Log.d("CALC", equation);
             count(false);
+        }
     }
 
     public void onClickFunctions(View view) {
@@ -110,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         }
         resultEquation.setText(equation);
         scrollLeft();
+        Log.d("CALC", equation);
         count(false);
     }
 
@@ -120,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 midResultEquation.setText(null);
                 break;
             case R.id.buttonClearEverything:
-                equation = " ";
+                equation = "";
                 result = 0.0;
                 resultEquation.setText(null);
                 midResultEquation.setText(null);
@@ -128,45 +132,48 @@ public class MainActivity extends AppCompatActivity {
             case R.id.buttonClear:
                 if (equation.length() == 1) {
                     midResultEquation.setText("");
-                    equation = " ";
-                }
-                else if (equation.length() == 0)
-                    equation = " ";
+                    equation = "";
+                } else if (equation.length() == 0)
+                    equation = "";
                 else
                     equation = equation.substring(0, equation.length() - 1);
                 resultEquation.setText(equation);
+                Log.d("CALC", equation);
                 count(false);
         }
     }
 
-    private boolean checkForInt(){
+    private boolean checkForInt() {
         /**
          * Checks if result can be put in output as integer(e.g. 12.0 -> 12)
          * @param [result] Result of equation
          * @return [true] if Int [false] if not
          */
-       String resultToStr = Double.toString(result);
+        String resultToStr = Double.toString(result);
 
         if (resultToStr.substring(resultToStr.length() - 2, resultToStr.length()) == ".0")
             return true;
         return false;
     }
 
-    private void roundResult(){
+    private void roundResult() {
         /**
          * Rounds double result, if it contains lots of digits with exponent.
          * @return nothing
          */
         String resultToStr = Double.toString(result);
 
-        if (resultToStr.length() > MAX_OUTPUT_LENGTH && resultToStr.indexOf("E") != -1){
-            double exp = Math.abs(Double.parseDouble(resultToStr.substring(resultToStr.indexOf("E") + 1, resultToStr.lastIndexOf(resultToStr) + 1)));
-
-            result = Math.round(result * pow(10.0, exp + MAX_SYMBOLS_IN_DOUBLE_WEXP)) / pow(10.0, exp + MAX_SYMBOLS_IN_DOUBLE_WEXP);
+        if (resultToStr.length() > MAX_OUTPUT_LENGTH && resultToStr.indexOf("E") != -1) {
+            try {
+                double exp = Math.abs(Double.parseDouble(resultToStr.substring(resultToStr.indexOf("E") + 1, resultToStr.lastIndexOf(resultToStr) + 1)));
+                result = Math.round(result * pow(10.0, exp + MAX_SYMBOLS_IN_DOUBLE_WEXP)) / pow(10.0, exp + MAX_SYMBOLS_IN_DOUBLE_WEXP);
+            } catch (StringIndexOutOfBoundsException e){
+                return;
+            }
         }
     }
 
-    private void scrollLeft(){
+    private void scrollLeft() {
         /**
          * Shifts content of editText to the right, when called
          * @params none
@@ -180,59 +187,62 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void count(boolean isEqualsPressed){
+    private void count(boolean isEqualsPressed) {
         /**
          * Counts the expression result, catches possible exceptions
          */
+
+        parser = new MatchParser();
+
         try {
-            parser = new MatchParser();
-        }
-        catch(Exception e){
-            return;
-        }
-        try {
+            Log.d("CALC", "Equation before parsing: " + equation);
             result = parser.Parse(equation);
-        }
-        catch(Exception e){
+            Log.d("CALC", "Result: " + Double.toString(result));
+        } catch (IllegalArgumentException e) {
+            Log.d("CALC", e.getMessage());
             if (isEqualsPressed) {
                 midResultEquation.setText(null);
-                equation = " ";
+                equation = "";
                 setOutput(isEqualsPressed);
             }
+            return;
+        } catch (ArithmeticException e){
+            Log.d("CALC", e.getMessage());
+            equation = "";
+            result = 0.0;
             return;
         }
         setOutput(isEqualsPressed);
     }
 
-    private void setOutput(boolean isEqualsPressed){
+    private void setOutput(boolean isEqualsPressed) {
         /**
          * Set output, whether equal button was pressed or not
          */
         String strResult;
 
         if (checkForInt())
-            strResult = Integer.toString((int)result);
+            strResult = Integer.toString((int) result);
         else {
             roundResult();
             strResult = Double.toString(result);
         }
 
-        if (isEqualsPressed){
+        if (isEqualsPressed) {
             resultEquation.setText(strResult);
             equation = strResult;
-        }
-        else{
+        } else {
             midResultEquation.setText(strResult);
         }
     }
 
-    private boolean findFunc(){
+    private boolean findFunc() {
         /**
          * Finds functions in equation string. Returns true if function was find or false
          * @return boolean
          */
-        for (int i = 0; i < equation.length(); i++){
-            for(int j = 0; j < functions.size(); j++){
+        for (int i = 0; i < equation.length(); i++) {
+            for (int j = 0; j < functions.size(); j++) {
                 if (equation.charAt(i) == functions.get(j).charAt(0))
                     return true;
             }

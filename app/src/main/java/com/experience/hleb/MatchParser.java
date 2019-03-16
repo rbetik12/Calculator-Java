@@ -24,8 +24,9 @@ public class MatchParser {
         return variables.get(variableName);
     }
 
-    public double Parse(String s) throws Exception
+    public double Parse(String s)
     {
+        if (s.length() == 0) throw new IllegalArgumentException("String size of 0");
         Result result = PlusMinus(s);
         if (!result.rest.isEmpty()) {
             System.err.println("Error: can't full parse");
@@ -34,8 +35,9 @@ public class MatchParser {
         return result.acc;
     }
 
-    private Result PlusMinus(String s) throws Exception
+    private Result PlusMinus(String s)
     {
+        if (s.length() == 0) throw new IllegalArgumentException("String size of 0");
         Result current = MulDiv(s);
         double acc = current.acc;
 
@@ -55,8 +57,9 @@ public class MatchParser {
         return new Result(acc, current.rest);
     }
 
-    private Result Bracket(String s) throws Exception
+    private Result Bracket(String s)
     {
+        if (s.length() == 0) throw new IllegalArgumentException("String size of 0");
         char zeroChar = s.charAt(0);
         if (zeroChar == '(') {
             Result r = PlusMinus(s.substring(1));
@@ -70,7 +73,7 @@ public class MatchParser {
         return FunctionVariable(s);
     }
 
-    private Result FunctionVariable(String s) throws Exception
+    private Result FunctionVariable(String s)
     {
         String f = "";
         int i = 0;
@@ -91,7 +94,7 @@ public class MatchParser {
         return Num(s);
     }
 
-    private Result MulDiv(String s) throws Exception
+    private Result MulDiv(String s)
     {
         Result current = Bracket(s);
 
@@ -109,6 +112,8 @@ public class MatchParser {
             if (sign == '*') {
                 acc *= right.acc;
             } else {
+                if (right.acc == 0)
+                    throw new ArithmeticException("Zero division");
                 acc /= right.acc;
             }
 
@@ -116,7 +121,7 @@ public class MatchParser {
         }
     }
 
-    private Result Num(String s) throws Exception
+    private Result Num(String s)
     {
         int i = 0;
         int dot_cnt = 0;
@@ -130,12 +135,12 @@ public class MatchParser {
         while (i < s.length() && (Character.isDigit(s.charAt(i)) || s.charAt(i) == '.')) {
             // но также проверям, что в числе может быть только одна точка!
             if (s.charAt(i) == '.' && ++dot_cnt > 1) {
-                throw new Exception("not valid number '" + s.substring(0, i + 1) + "'");
+                throw new IllegalArgumentException("not valid number " + s.substring(0, i + 1) + " ");
             }
             i++;
         }
         if( i == 0 ){ // что-либо похожее на число мы не нашли
-            throw new Exception( "can't get valid number in '" + s + "'" );
+            throw new IllegalArgumentException( "can't get valid number in " + s + " " );
         }
 
         double dPart = Double.parseDouble(s.substring(0, i));
