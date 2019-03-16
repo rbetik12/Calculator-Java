@@ -6,11 +6,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.lang.Math.pow;
+import static java.lang.Math.abs;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private double result;
     private int MAX_OUTPUT_LENGTH;
     private int MAX_SYMBOLS_IN_DOUBLE_WEXP;
-    private ArrayList<String> functions;
+    private List<String> functions;
     public MatchParser parser;
     private TextView midResultEquation;
     private TextView resultEquation;
@@ -36,11 +38,7 @@ public class MainActivity extends AppCompatActivity {
         midResultEquation = findViewById(R.id.midResultEquation);
         resultEquation = findViewById(R.id.resultEquation);
         scrollView = findViewById(R.id.scroll);
-        functions = new ArrayList<>();
-        functions.add("+");
-        functions.add("-");
-        functions.add("*");
-        functions.add("/");
+        functions = new ArrayList<>(Arrays.asList("+", "-", "*", "/"));
     }
 
     public void onClickNumbers(View view) {
@@ -141,40 +139,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkForInt() {
-        /**
-         * Checks if result can be put in output as integer(e.g. 12.0 -> 12)
-         * @param [result] Result of equation
-         * @return [true] if Int [false] if not
+        /*
+          Checks if result can be put in output as integer(e.g. 12.0 -> 12)
+          @param [result] Result of equation
+          @return [true] if Int [false] if not
          */
         String resultToStr = Double.toString(result);
 
-        if (resultToStr.substring(resultToStr.length() - 2, resultToStr.length()) == ".0")
-            return true;
-        return false;
+        return resultToStr.substring(resultToStr.length() - 2).equals(".0");
     }
 
     private void roundResult() {
-        /**
-         * Rounds double result, if it contains lots of digits with exponent.
-         * @return nothing
+        /*
+          Rounds double result, if it contains lots of digits with exponent.
+          @return nothing
          */
         String resultToStr = Double.toString(result);
 
-        if (resultToStr.length() > MAX_OUTPUT_LENGTH && resultToStr.indexOf("E") != -1) {
+        if (resultToStr.length() > MAX_OUTPUT_LENGTH && resultToStr.contains("E")) {
             try {
-                double exp = Math.abs(Double.parseDouble(resultToStr.substring(resultToStr.indexOf("E") + 1, resultToStr.lastIndexOf(resultToStr) + 1)));
+                double exp = abs(Double.parseDouble(resultToStr.substring(resultToStr.indexOf("E") + 1, resultToStr.lastIndexOf(resultToStr) + 1)));
                 result = Math.round(result * pow(10.0, exp + MAX_SYMBOLS_IN_DOUBLE_WEXP)) / pow(10.0, exp + MAX_SYMBOLS_IN_DOUBLE_WEXP);
-            } catch (StringIndexOutOfBoundsException e){
-                return;
+            } catch (StringIndexOutOfBoundsException ignored) {
             }
         }
     }
 
     private void scrollLeft() {
-        /**
-         * Shifts content of editText to the right, when called
-         * @params none
-         * @return nothing
+        /*
+          Shifts content of editText to the right, when called
+          @params none
+          @return nothing
          */
         scrollView.post(new Runnable() {
             @Override
@@ -203,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 setOutput(isEqualsPressed);
             }
             return;
-        } catch (ArithmeticException e){
+        } catch (ArithmeticException e) {
             Log.d("CALC", e.getMessage());
             equation = "";
             result = 0.0;
@@ -213,8 +208,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setOutput(boolean isEqualsPressed) {
-        /**
-         * Set output, whether equal button_normal was pressed or not
+        /*
+          Sets output, whether equal button was pressed or not
          */
         String strResult;
 
@@ -224,7 +219,6 @@ public class MainActivity extends AppCompatActivity {
             roundResult();
             strResult = Double.toString(result);
         }
-
         if (isEqualsPressed) {
             resultEquation.setText(strResult);
             equation = strResult;
@@ -234,9 +228,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean findFunc() {
-        /**
-         * Finds functions in equation string. Returns true if function was find or false
-         * @return boolean
+        /*
+
+          Finds functions in equation string. Returns true if function was find or false
+          @return boolean
          */
         for (int i = 0; i < equation.length(); i++) {
             for (int j = 0; j < functions.size(); j++) {
